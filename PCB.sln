@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PCB", "PCB\PCB.vcxproj", "{7461990F-90B9-4715-A12D-CAD90B9576BC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PCB", "PCB\PCB.vcxproj", "{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Debug|x64.ActiveCfg = Debug|x64
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Debug|x64.Build.0 = Debug|x64
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Debug|x86.ActiveCfg = Debug|Win32
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Debug|x86.Build.0 = Debug|Win32
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Release|x64.ActiveCfg = Release|x64
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Release|x64.Build.0 = Release|x64
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Release|x86.ActiveCfg = Release|Win32
-		{7461990F-90B9-4715-A12D-CAD90B9576BC}.Release|x86.Build.0 = Release|Win32
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Debug|x64.ActiveCfg = Debug|x64
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Debug|x64.Build.0 = Debug|x64
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Debug|x86.ActiveCfg = Debug|Win32
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Debug|x86.Build.0 = Debug|Win32
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Release|x64.ActiveCfg = Release|x64
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Release|x64.Build.0 = Release|x64
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Release|x86.ActiveCfg = Release|Win32
+		{B6F14FDE-313B-4B7D-8EEC-03146C471F0E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
