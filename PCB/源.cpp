@@ -5,6 +5,118 @@
 
 using namespace cv;
 using namespace std;
+int wid = 8; //每一帧长的十分之一作为单位矩形的长
+int len = 6; //每一帧宽十分之一作为单位矩形的宽
+int iLowH = 104;
+int iHighH = 115;
+int iLowS = 54;
+int iHighS = 255;
+int iLowV = 210;
+int iHighV = 255;
+Mat frames, hsv;
+Mat temp_frame;
+/*
+得到想要追踪的目标，将图像二值化
+我们想要的目标像素值给255，其他背景给0
+*/
+void HSV_(Mat& frame, Mat& dst)
+{
+	Mat frameHSV;
+	dst = frame.clone();
+	std::vector<Mat> splited;
+	cvtColor(frame, frameHSV, COLOR_BGR2HSV);
+	split(frameHSV, splited);
+	equalizeHist(splited[2], splited[2]);
+	merge(splited, frameHSV);
+	inRange(frameHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), dst);
+	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
+	morphologyEx(dst, dst, MORPH_OPEN, element);
+	morphologyEx(dst, dst, MORPH_CLOSE, element);
+}
+Mat Contours(Mat inrange, Rect &maxRect)
+{
+	Mat  open, close;
+	int area[1010], i;
+	int areamax;
+	Mat Ctimg;//连通域图
+	stringstream ss;
+
+	/*形态学操作*/
+	Mat element = getStructuringElement(MORPH_RECT, Size(4, 4));
+	morphologyEx(inrange, close, MORPH_CLOSE, element);
+	morphologyEx(close, open, MORPH_OPEN, element);
+
+	/*轮廓寻找与面积的计算*/
+	vector<Point> points;
+	vector<vector<cv::Point>> contours;
+	/*
+			cv::很重要，不然可能出问题:原因是标准库里有std::vector 和 Point 
+		和findContours里要用到的vector和Point不是一回事所以，声明的时候要用
+		cv::vector和cv::Point就可以了
+	*/
+	vector<Vec4i> hierarchy;
+	findContours(open, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+
+	double maxArea = 0;
+	for (long i = 0; i < contours.size(); i++)
+	{
+		double each = contourArea(contours[i]);
+		if (each > maxArea)
+		{
+			maxArea = each;
+			points = contours[i];
+		}
+	}
+	maxRect = boundingRect(points);
+	if (maxRect.area() > 50)//加上判断，防止在丢失目标时还画框
+	{
+		rectangle(open, maxRect, Scalar(255));
+		ss << "__" << maxArea;
+		putText(open,        //目标图片
+			ss.str(),     //待绘制的文字
+			Point(maxRect.x, maxRect.y),//左下角
+			FONT_HERSHEY_COMPLEX_SMALL, //字体
+			1,//尺寸因子，值越大字体越大,double
+			Scalar(255, 255, 255),
+			1,//线条宽度
+			4, //线型，4或8邻域
+			0);//1,反转180°,0不反转
+	}
+	return open;
+}
+void simp_sun(Mat input) {
+	//Mat to IplImzge 深拷贝
+	IplImage imgTmp = input;
+	IplImage* src = &imgTmp;
+
+
+	int height = src->height;
+	int width = src->width;
+	int step = src->widthStep;
+	int i = 0, j = 0;
+	int R, G, B, A;
+	unsigned char* srcData;
+
+	for (i = 0; i < height; i++)
+	{
+		srcData = (unsigned char*)src->imageData + i * step;
+		for (j = 0; j < width; j++)
+		{
+			R = srcData[j * 3];
+			G = srcData[j * 3 + 1];
+			B = srcData[j * 3 + 2];
+			if ((R + G + B) > 150)
+			{
+				A = max(max(R, G), B);//求最大值
+
+				srcData[j * 3 + 0] = 150 * R / (A + 1);
+				srcData[j * 3 + 1] = 150 * G / (A + 1);
+				srcData[j * 3 + 2] = 150 * B / (A + 1);
+			}
+		}
+	}
+
+}
 
 int main()
 {
@@ -38,6 +150,14 @@ int main()
 			0);//1,反转180°,0不反转
 		imshow("img", img);
 		waitKey(1);
+		/*转化为HSV求连通域*/
+
+		/*
+		遍历循环，输出点的坐标
+		输出点面积
+		输出形状
+		*/
+
 	}
 
 	return 0;
