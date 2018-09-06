@@ -2,17 +2,20 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 
 using namespace cv;
 using namespace std;
 int wid = 8; //每一帧长的十分之一作为单位矩形的长
 int len = 6; //每一帧宽十分之一作为单位矩形的宽
-int iLowH = 104;
-int iHighH = 115;
-int iLowS = 54;
+int iLowH = 43;
+int iHighH = 80;
+int iLowS = 178;
 int iHighS = 255;
-int iLowV = 210;
-int iHighV = 255;
+int iLowV = 0;
+int iHighV = 203;
+//面积比28:1
+
 Mat frames, hsv;
 Mat temp_frame;
 /*
@@ -42,7 +45,7 @@ Mat Contours(Mat inrange, Rect &maxRect)
 	stringstream ss;
 
 	/*形态学操作*/
-	Mat element = getStructuringElement(MORPH_RECT, Size(4, 4));
+	Mat element = getStructuringElement(MORPH_RECT, Size(2, 2));
 	morphologyEx(inrange, close, MORPH_CLOSE, element);
 	morphologyEx(close, open, MORPH_OPEN, element);
 
@@ -120,6 +123,15 @@ void simp_sun(Mat input) {
 
 int main()
 {
+	cvNamedWindow("controlRANGE");//range窗口
+	cvNamedWindow("ControlHSV");//hsv窗口
+								//	cvNamedWindow("manycsize");//内核
+	createTrackbar("LowH", "ControlHSV", &iLowH, 255); //
+	createTrackbar("HighH", "ControlHSV", &iHighH, 255);
+	createTrackbar("LowS", "ControlHSV", &iLowS, 255); //
+	createTrackbar("HighS", "ControlHSV", &iHighS, 255);
+	createTrackbar("LowV", "ControlHSV", &iLowV, 255); //
+	createTrackbar("HighV", "ControlHSV", &iHighV, 255);
 	VideoCapture cap;
 	cap = VideoCapture(CV_CAP_DSHOW + 0);	//使用DirectShow    +1则是1号摄像头默认是0号
 	if (!cap.isOpened())
@@ -127,13 +139,14 @@ int main()
 		cout << "Can't open your camera." << endl;
 		return -1;
 	}
-	cap.set(CV_CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'V', '2'));//设置为MJPG格式
+	//cap.set(CV_CAP_PROP_FOURCC, CV_FOURCC('Y', 'U', 'V', '2'));//设置为MJPG格式
 															   //	cap.set(CV_CAP_PROP_EXPOSURE, -7);//设置曝光时间
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1920);
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1080);
 	while (1)
 	{
 		Mat img;
+		Rect box;
 		cap >> img;
 		stringstream text;
 		int i = 100;
@@ -148,7 +161,11 @@ int main()
 			3,//线条宽度
 			4, //线型，4或8邻域
 			0);//1,反转180°,0不反转
+		HSV_(img, hsv);
+		frames=Contours(hsv, box);
 		imshow("img", img);
+		imshow("hsv", hsv);
+		imshow("contours", frames);
 		waitKey(1);
 		/*转化为HSV求连通域*/
 
