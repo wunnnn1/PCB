@@ -1,11 +1,4 @@
 //#include "stdafx.h"
-/*
-minAreaRect()可以获得旋转的矩形
-需要存储在RotatedRect中，Box2D
-
-
-
-*/
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -43,7 +36,7 @@ void HSV_(Mat& frame, Mat& dst)
 	morphologyEx(dst, dst, MORPH_OPEN, element);
 	morphologyEx(dst, dst, MORPH_CLOSE, element);
 }
-Mat Contours_r(Mat inrange, RotatedRect &maxRect)//旋转的矩形
+Mat Contours(Mat inrange, Rect &maxRect)
 {
 	Mat  open, close;
 	int area[1010], i;
@@ -77,20 +70,17 @@ Mat Contours_r(Mat inrange, RotatedRect &maxRect)//旋转的矩形
 			points = contours[i];
 		}
 	}
-	if(points.size())
-	maxRect = minAreaRect(points);
-
-	//if (maxRect.size.area()> 50)//加上判断，防止在丢失目标时还画框
-	if (1)//加上判断，防止在丢失目标时还画框
-		{
-		rectangle(open, maxRect.boundingRect(), Scalar(100));
+	maxRect = boundingRect(points);
+	if (maxRect.area() > 50)//加上判断，防止在丢失目标时还画框
+	{
+		rectangle(open, maxRect, Scalar(255));
 		ss << "__" << maxArea;
 		putText(open,        //目标图片
 			ss.str(),     //待绘制的文字
-			maxRect.center,//左下角
+			Point(maxRect.x, maxRect.y),//左下角
 			FONT_HERSHEY_COMPLEX_SMALL, //字体
 			1,//尺寸因子，值越大字体越大,double
-			Scalar(100),
+			Scalar(255, 255, 255),
 			1,//线条宽度
 			4, //线型，4或8邻域
 			0);//1,反转180°,0不反转
@@ -156,7 +146,7 @@ int main()
 	while (1)
 	{
 		Mat img;
-		RotatedRect box;
+		Rect box;
 		cap >> img;
 		stringstream text;
 		int i = 100;
@@ -172,7 +162,7 @@ int main()
 			4, //线型，4或8邻域
 			0);//1,反转180°,0不反转
 		HSV_(img, hsv);
-		frames=Contours_r(hsv, box);
+		frames=Contours(hsv, box);
 		imshow("img", img);
 		imshow("hsv", hsv);
 		imshow("contours", frames);
