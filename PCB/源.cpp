@@ -15,8 +15,8 @@ using namespace cv;
 using namespace std;
 int wid = 8; //每一帧长的十分之一作为单位矩形的长
 int len = 6; //每一帧宽十分之一作为单位矩形的宽
-int iLowH = 43;
-int iHighH = 80;
+int iLowH = 19;
+int iHighH = 98;
 int iLowS = 178;
 int iHighS = 255;
 int iLowV = 0;
@@ -84,7 +84,7 @@ Mat Contours_r(Mat inrange, RotatedRect &maxRect)//旋转的矩形
 	if (1)//加上判断，防止在丢失目标时还画框
 		{
 		rectangle(open, maxRect.boundingRect(), Scalar(100));
-		ss << "__" << maxArea;
+		ss << "__at" << maxRect.center<<"size"<<maxRect.size;
 		putText(open,        //目标图片
 			ss.str(),     //待绘制的文字
 			maxRect.center,//左下角
