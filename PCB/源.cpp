@@ -38,7 +38,7 @@ int main()
 
 	//【2】创建窗口和滑动条，并进行显示和回调函数初始化
 	namedWindow(W_NAME1, WINDOW_AUTOSIZE);
-	createTrackbar("最大角点数", W_NAME1, &g_maxTrackbarNumber, g_maxTrackbarNumber, on_GoodFeaturseToTrack);
+	createTrackbar("最大角点数", W_NAME1, &g_maxConreNumber, g_maxTrackbarNumber, on_GoodFeaturseToTrack);
 	imshow(W_NAME1, g_srcImage);
 	on_GoodFeaturseToTrack(0, 0);
 	waitKey(0);
@@ -72,7 +72,7 @@ void on_GoodFeaturseToTrack(int, void*)
 		false,//不使用Harris角点检测
 		k);//权重系数
 	//【4】输出文字信息
-	std::cout <<"1此次检测到的角点数量为："<< corners.size() << endl;
+	std::cout <<"num is "<< corners.size() << endl;
 
 
 	//【5】绘制检测到的角点
