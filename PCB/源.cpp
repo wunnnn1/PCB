@@ -33,7 +33,7 @@ void on_GoodFeaturseToTrack(int, void*);
 int main()
 {
 	//【1】载入原图像并转化为灰度
-	g_srcImage = imread("1 (3).jpg", 1);
+	g_srcImage = imread("2.jpg", 1);
 	cvtColor(g_srcImage, g_grayimage, COLOR_BGR2GRAY);
 
 	//【2】创建窗口和滑动条，并进行显示和回调函数初始化
@@ -44,8 +44,50 @@ int main()
 	waitKey(0);
 	return(0);
 }
+////--------------------------【on_GoodFeaturseToTrack_demo()函数】------------------------------------------------------------
+////描述：响应滑动条移动消息的回调函数，角点计算
+////--------------------------------------------------------------------------------------
+//void on_GoodFeaturseToTrack(int, void*)
+//{
+//	//【1】对变量小于等于1时的处理
+//	if (g_maxConreNumber <= 1)
+//		g_maxConreNumber = 1;
+//
+//	//【2】	Shi-Tomasi算法的参数准备（goodFeaturesToTrack函数）
+//	vector<Point2f>corners;
+//	double qualityLevel = 0.01;//角点检测可接受的最小特征值
+//	double minDistance = 10;//角点之间最小的距离
+//	int blockSize = 3;//计算导数自相关矩阵时指定的邻域范围
+//	double k = 0.04;//权重系数
+//	Mat copy = g_srcImage.clone();
+//
+//	//【3】进行Shi-Tomasi角点检测
+//	goodFeaturesToTrack(g_grayimage,//输入
+//		corners,//检测到角点的输出向量
+//		g_maxConreNumber,//角点最大数量
+//		qualityLevel,//角点可接受的最小特征值
+//		minDistance,//角点之间的最小距离
+//		Mat(),//感兴趣区域
+//		blockSize,//计算导数自相关矩阵时指定的邻域范围
+//		false,//不使用Harris角点检测
+//		k);//权重系数
+//	//【4】输出文字信息
+//	std::cout <<"num is "<< corners.size() << endl;
+//
+//
+//	//【5】绘制检测到的角点
+//	int r = 4;
+//	for (unsigned int i = 0; i < corners.size(); i++)
+//	{
+//		//以随机的颜色绘制出角点
+//		circle(copy, corners[i], r, Scalar(g_rng.uniform(0, 255), g_rng.uniform(0, 255), g_rng.uniform(0, 255)), -1, 8, 0);
+//
+//	}
+//	//【6】	显示与更新窗口
+//	imshow(W_NAME1, copy);
+//}
 //--------------------------【on_GoodFeaturseToTrack_demo()函数】------------------------------------------------------------
-//描述：响应滑动条移动消息的回调函数
+//描述：响应滑动条移动消息的回调函数，角点计算
 //--------------------------------------------------------------------------------------
 void on_GoodFeaturseToTrack(int, void*)
 {
@@ -71,8 +113,8 @@ void on_GoodFeaturseToTrack(int, void*)
 		blockSize,//计算导数自相关矩阵时指定的邻域范围
 		false,//不使用Harris角点检测
 		k);//权重系数
-	//【4】输出文字信息
-	std::cout <<"num is "<< corners.size() << endl;
+		   //【4】输出文字信息
+	std::cout << "num is " << corners.size() << endl;
 
 
 	//【5】绘制检测到的角点
@@ -85,4 +127,20 @@ void on_GoodFeaturseToTrack(int, void*)
 	}
 	//【6】	显示与更新窗口
 	imshow(W_NAME1, copy);
+	//【7】	亚像素角点检测的参数设置
+	Size winSize = Size(5, 5);
+	Size zeroZone = Size(-1, -1);
+	TermCriteria criteria = TermCriteria(TermCriteria::EPS + TermCriteria::MAX_ITER, 40, 0.001);
+	//【8】	计算亚像素角点的位置
+	cornerSubPix(g_grayimage, corners, winSize, zeroZone, criteria);
+	//【9】	输出角点信息
+	for (int i = 0; i < corners.size(); i++)
+	{
+		cout <<
+			" \t jing que dian zuo biao[" << i << "](" << corners[i].x << ',' << corners[i].y << ")" << endl;
+
+	}
+
+
+
 }
